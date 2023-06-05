@@ -18,8 +18,8 @@ model Advertisement {
   brand        String
   mileage      String?
   color        String?
-  fipe_price   Int?
-  is_available Boolean
+  fipe_price   Float?
+  is_available Boolean   @default(true)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
