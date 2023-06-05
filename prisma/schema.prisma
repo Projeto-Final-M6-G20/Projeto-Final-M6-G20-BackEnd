@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Advertisement {
+  id           String    @id
+  title        String
+  price        Float
+  description  String
+  year         Int
+  model        String
+  fuel_type    String
+  brand        String
+  mileage      String?
+  color        String?
+  fipe_price   Int?
+  is_available Boolean
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+  images       Image[]
+
+  @@map("advertisements")
+}
+
+model Image {
+  id              String         @id
+  url             String
+  Advertisement   Advertisement? @relation(fields: [advertisementId], references: [id])
+  advertisementId String?
+
+  @@map("images")
+}
