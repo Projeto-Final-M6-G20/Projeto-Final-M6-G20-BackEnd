@@ -25,7 +25,11 @@ export class AdvertisementsPrismaRepository implements AdvertisementsRepository 
   }
 
   async findAll(): Promise<Advertisement[]> {
-    const advertisements = await this.prisma.advertisement.findMany()
+    const advertisements = await this.prisma.advertisement.findMany({
+      where: {
+        is_available: true
+      }
+    })
     return plainToInstance(Advertisement, advertisements)
   }
 
