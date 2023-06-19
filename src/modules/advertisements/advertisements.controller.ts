@@ -1,16 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { AdvertisementsService } from './advertisements.service';
 import { CreateAdvertisementDto } from './dto/create-advertisement.dto';
 import { UpdateAdvertisementDto } from './dto/update-advertisement.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('advertisements')
 export class AdvertisementsController {
-  constructor(private readonly advertisementsService: AdvertisementsService) { }
+  constructor(private readonly advertisementsService: AdvertisementsService) {}
   @UseInterceptors(ClassSerializerInterceptor)
-
   @Post()
-  create(@Body() createAdvertisementDto: CreateAdvertisementDto) {
-    return this.advertisementsService.create(createAdvertisementDto);
+  @UseGuards(AuthGuard('jwt'))
+  create(
+    @Body() createAdvertisementDto: CreateAdvertisementDto,
+    @Request() req: any,
+  ) {
+    const userId = req.user.id;
+    return this.advertisementsService.create(createAdvertisementDto, userId);
   }
 
   @Get()
@@ -24,7 +41,10 @@ export class AdvertisementsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAdvertisementDto: UpdateAdvertisementDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateAdvertisementDto: UpdateAdvertisementDto,
+  ) {
     return this.advertisementsService.update(id, updateAdvertisementDto);
   }
 

@@ -1,51 +1,56 @@
-import { IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
-
-
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateAdvertisementDto {
   @IsString()
   @IsNotEmpty()
-  title: string
+  title: string;
 
   @IsNumber()
   @IsNotEmpty()
-  price: number
+  price: number;
 
   @IsString()
   @IsNotEmpty()
-  description: string
+  description: string;
 
   @IsInt()
   @IsNotEmpty()
-  year: number
+  year: number;
 
   @IsString()
   @IsNotEmpty()
-  model: string
+  model: string;
 
   @IsString()
   @IsNotEmpty()
-  fuel_type: string
+  fuel_type: string;
 
   @IsString()
   @IsNotEmpty()
-  brand: string
+  brand: string;
 
   @IsString()
   @IsOptional()
-  mileage: string
+  mileage: string;
 
   @IsString()
   @IsOptional()
-  color: string
+  color: string;
 
   @IsNumber()
   @IsOptional()
-  fipe_price: number
+  fipe_price: number;
 
   @IsBoolean()
   @IsOptional()
-  is_available?: boolean
+  is_available?: boolean;
 
   createdAt: Date;
 
