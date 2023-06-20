@@ -3,6 +3,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Cla
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ResetUserPasswordDto } from './dto/reset-password';
 
 @Controller('users')
 export class UsersController {
@@ -40,5 +41,14 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  
+  @Patch('resetPassword')
+  async resetPassword(@Body() resetUserPasswordDto: ResetUserPasswordDto) {
+   await this.usersService.resetPassword(resetUserPasswordDto);
+    return {
+      message: 'senha alterada!'
+    }
   }
 }

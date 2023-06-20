@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
+import { ResetUserPasswordDto } from './dto/reset-password';
 
 @Injectable()
 export class UsersService {
@@ -47,5 +48,14 @@ export class UsersService {
       throw new NotFoundException('User not found')
     }
     return await this.usersRepository.delete(id);
+  }
+
+  async resetPassword(resetUserPasswordDto: ResetUserPasswordDto) {
+    const user = await this.findByEmail(resetUserPasswordDto.email);
+    if (!user) {
+      throw new NotFoundException('User not found !');
+    }
+
+    return await this.usersRepository.updatePassword(user.id, resetUserPasswordDto.password);
   }
 }
