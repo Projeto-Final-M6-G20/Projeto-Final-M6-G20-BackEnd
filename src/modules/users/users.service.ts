@@ -3,11 +3,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersRepository } from './repositories/users.repository';
 import { ResetUserPasswordDto } from './dto/reset-password';
+import { randomUUID } from 'node:crypto';
+import { MailService } from 'src/utils/mail.service';
 
 @Injectable()
 export class UsersService {
 
-  constructor(private usersRepository: UsersRepository) { }
+  constructor(
+    private usersRepository: UsersRepository,
+    private mailService: MailService
+  ) { }
   async create(createUserDto: CreateUserDto) {
     const user = await this.usersRepository.create(createUserDto)
 
@@ -50,12 +55,24 @@ export class UsersService {
     return await this.usersRepository.delete(id);
   }
 
-  async resetPassword(resetUserPasswordDto: ResetUserPasswordDto) {
-    const user = await this.findByEmail(resetUserPasswordDto.email);
+  async sendEmailResetPassword(email: string) {
+    const user = await this.findByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found !');
     }
+    const resetToken = randomUUID()
 
-    return await this.usersRepository.updatePassword(user.id, resetUserPasswordDto.password);
+    await this.usersRepository.updateToken(email, resetToken)
+    const resetPasswordTemplate = this.mailService.resetPasswordTemplate(email, user.fullname, resetToken)
+    await this.mailService.sendEmail(resetPasswordTemplate)
+
+  }
+  async resetPassword(password: string, reset_token: string) {
+    const user = await this.usersRepository.findByToken(reset_token)
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
+
+    return await this.usersRepository.updatePassword(user.id, password);
   }
 }
