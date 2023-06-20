@@ -8,5 +8,6 @@ export abstract class UsersRepository {
   abstract findOne(id: string): Promise<User | undefined> | User | undefined
   abstract findByEmail(email: string): Promise<User> | User
   abstract update(id: string, data: UpdateUserDto): Promise<User> | User
+  abstract updatePassword(id: string, password: string): Promise<void> | void;
   abstract delete(id: string): Promise<void> | void
 }

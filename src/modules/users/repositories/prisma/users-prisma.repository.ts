@@ -6,6 +6,7 @@ import { CreateUserDto } from "../../dto/create-user.dto";
 import { UpdateUserDto } from "../../dto/update-user.dto";
 import { User } from "../../entities/user.entity";
 import { UsersRepository } from "../users.repository";
+import { hashSync } from 'bcryptjs';
 
 @Injectable()
 export class UsersPrismaRepository implements UsersRepository {
@@ -90,5 +91,14 @@ export class UsersPrismaRepository implements UsersRepository {
     await this.prisma.user.delete({
       where: { id },
     })
+  }
+
+  async updatePassword(id: string, password: string): Promise<void> {
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        password: password
+      },
+    });
   }
 }
