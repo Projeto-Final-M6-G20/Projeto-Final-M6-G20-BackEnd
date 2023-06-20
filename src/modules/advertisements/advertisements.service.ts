@@ -6,39 +6,44 @@ import { AdvertisementsRepository } from './repositories/advertisements.reposito
 
 @Injectable()
 export class AdvertisementsService {
+  constructor(private advertisementsRepository: AdvertisementsRepository) {}
 
-  constructor(private advertisementsRepository: AdvertisementsRepository) { }
+  async create(createAdvertisementDto: CreateAdvertisementDto, userId: string) {
+    const advertisement = await this.advertisementsRepository.create(
+      createAdvertisementDto,
+      userId,
+    );
 
-  async create(createAdvertisementDto: CreateAdvertisementDto) {
-    const advertisement = await this.advertisementsRepository.create(createAdvertisementDto)
-
-    return advertisement
+    return advertisement;
   }
 
   async findAll() {
-    const advertisements = await this.advertisementsRepository.findAll()
-    return advertisements
+    const advertisements = await this.advertisementsRepository.findAll();
+    return advertisements;
   }
   async checkAdvertisementExists(id: string): Promise<Advertisement> {
-    const advertisement = await this.advertisementsRepository.findOne(id)
+    const advertisement = await this.advertisementsRepository.findOne(id);
     if (!advertisement) {
-      throw new NotFoundException('Advertisement not found')
+      throw new NotFoundException('Advertisement not found');
     }
-    return advertisement
+    return advertisement;
   }
 
   async findOne(id: string) {
-    const findAdvertisements = await this.checkAdvertisementExists(id)
-    return findAdvertisements
+    const findAdvertisements = await this.checkAdvertisementExists(id);
+    return findAdvertisements;
   }
 
   async update(id: string, updateAdvertisementDto: UpdateAdvertisementDto) {
-    await this.checkAdvertisementExists(id)
-    return await this.advertisementsRepository.update(id, updateAdvertisementDto)
+    await this.checkAdvertisementExists(id);
+    return await this.advertisementsRepository.update(
+      id,
+      updateAdvertisementDto,
+    );
   }
 
   async remove(id: string) {
-    await this.checkAdvertisementExists(id)
-    return await this.advertisementsRepository.delete(id)
+    await this.checkAdvertisementExists(id);
+    return await this.advertisementsRepository.delete(id);
   }
 }
