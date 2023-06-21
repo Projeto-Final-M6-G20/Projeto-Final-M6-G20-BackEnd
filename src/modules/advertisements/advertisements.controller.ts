@@ -35,9 +35,10 @@ export class AdvertisementsController {
     return this.advertisementsService.findAll();
   }
 
-  @Get(':id')
-  findAllUserAd(@Param('id') id: string) {
-    return this.advertisementsService.findAllUserAd(id);
+  @Get('/user')
+  @UseGuards(AuthGuard('jwt'))
+  findAllUserAd(@Request() req: any) {
+    return this.advertisementsService.findAllUserAd(req.user.id);
   }
 
   @Get(':id')
