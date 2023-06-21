@@ -8,6 +8,9 @@ export abstract class AdvertisementsRepository {
     userId: string,
   ): Promise<Advertisement> | Advertisement;
   abstract findAll(): Promise<Advertisement[]> | Advertisement[];
+  abstract findAllUserAd(
+    id: string,
+  ): Promise<Advertisement[]> | Advertisement[];
   abstract findOne(
     id: string,
   ): Promise<Advertisement | undefined> | Advertisement | undefined;
