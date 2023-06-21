@@ -36,6 +36,11 @@ export class AdvertisementsController {
   }
 
   @Get(':id')
+  findAllUserAd(@Param('id') id: string) {
+    return this.advertisementsService.findAllUserAd(id);
+  }
+
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.advertisementsService.findOne(id);
   }

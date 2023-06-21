@@ -21,6 +21,12 @@ export class AdvertisementsService {
     const advertisements = await this.advertisementsRepository.findAll();
     return advertisements;
   }
+
+  async findAllUserAd(id: string) {
+    const userAdvertisements =
+      await this.advertisementsRepository.findAllUserAd(id);
+    return userAdvertisements;
+  }
   async checkAdvertisementExists(id: string): Promise<Advertisement> {
     const advertisement = await this.advertisementsRepository.findOne(id);
     if (!advertisement) {
