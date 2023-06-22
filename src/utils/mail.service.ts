@@ -39,7 +39,7 @@ export class MailService {
           instructions: "Clique no botão abaixo para criar uma nova senha",
           button: {
             text: "Resetar senha",
-            link: `http://localhost:3000/users/resetPassword/${resetToken}`
+            link: `http://localhost:3001/resetPassword/${resetToken}`
           }
         }
       }
