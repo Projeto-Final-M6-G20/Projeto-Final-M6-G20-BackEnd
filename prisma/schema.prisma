@@ -24,7 +24,7 @@ model Advertisement {
   updatedAt    DateTime  @updatedAt
   deletedAt    DateTime?
   images       Image[]
-  User         User?     @relation(fields: [userId], references: [id])
+  User         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String?
   Comment      Comment[]
 
@@ -73,7 +73,7 @@ model Address {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   deletedAt  DateTime?
-  user       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String    @unique
 
   @@map("addresses")
