@@ -117,7 +117,5 @@ export class AdvertisementsPrismaRepository
     });
   }
 }
-function typeOf(price: number) {
-  throw new Error('Function not implemented.');
-}
+
 

@@ -64,7 +64,5 @@ export class AdvertisementsController {
     return this.advertisementsService.remove(id);
   }
 }
-function typeOf(price: number): any {
-  throw new Error('Function not implemented.');
-}
+
 
