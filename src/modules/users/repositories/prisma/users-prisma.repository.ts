@@ -79,7 +79,6 @@ export class UsersPrismaRepository implements UsersRepository {
   async findByEmail(email: string): Promise<User> {
     const user = await this.prisma.user.findFirst({
       where: { email }
-
     })
     return user
   }
