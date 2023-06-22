@@ -1,12 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAdvertisementDto } from './dto/create-advertisement.dto';
+import { FiltersAdvertisementDto } from './dto/filters-advertisement.dto';
+import { PaginationDto } from './dto/pagination.dto';
 import { UpdateAdvertisementDto } from './dto/update-advertisement.dto';
 import { Advertisement } from './entities/advertisement.entity';
 import { AdvertisementsRepository } from './repositories/advertisements.repository';
 
 @Injectable()
 export class AdvertisementsService {
-  constructor(private advertisementsRepository: AdvertisementsRepository) {}
+  constructor(private advertisementsRepository: AdvertisementsRepository) { }
 
   async create(createAdvertisementDto: CreateAdvertisementDto, userId: string) {
     const advertisement = await this.advertisementsRepository.create(
@@ -17,8 +19,10 @@ export class AdvertisementsService {
     return advertisement;
   }
 
-  async findAll() {
-    const advertisements = await this.advertisementsRepository.findAll();
+  async findAll(paginationDto: PaginationDto, filters?: FiltersAdvertisementDto) {
+    const { page = "1", limit = "15" } = paginationDto;
+
+    const advertisements = await this.advertisementsRepository.findAll(page, limit, filters);
     return advertisements;
   }
 

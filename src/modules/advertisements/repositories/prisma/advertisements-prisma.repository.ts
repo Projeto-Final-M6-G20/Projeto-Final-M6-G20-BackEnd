@@ -6,17 +6,28 @@ import { UpdateAdvertisementDto } from '../../dto/update-advertisement.dto';
 import { Advertisement } from '../../entities/advertisement.entity';
 import { AdvertisementsRepository } from '../advertisements.repository';
 import { AuthGuard } from '@nestjs/passport';
+import { AdvertisementPagination } from '../../dto/pagination.dto';
+import { Prisma } from '@prisma/client';
+import { FiltersAdvertisementDto } from '../../dto/filters-advertisement.dto';
+
+
+
 
 @Injectable()
 export class AdvertisementsPrismaRepository
-  implements AdvertisementsRepository
-{
-  constructor(private prisma: PrismaService) {}
+  implements AdvertisementsRepository {
+  constructor(private prisma: PrismaService) { }
 
   async create(
     data: CreateAdvertisementDto,
     userId: string,
   ): Promise<Advertisement> {
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new Error('Usuário não encontrado.');
+    }
     const advertisement = new Advertisement();
     Object.assign(advertisement, {
       ...data,
@@ -30,13 +41,46 @@ export class AdvertisementsPrismaRepository
     return plainToInstance(Advertisement, newAdvertisement);
   }
 
-  async findAll(): Promise<Advertisement[]> {
+  async findAll(page: string, limit: string, filters?: FiltersAdvertisementDto): Promise<AdvertisementPagination> {
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const whereFilters: any = {
+      is_available: true,
+      ...filters,
+    };
+
+    if (filters && filters.year) {
+      whereFilters.year = parseInt(filters.year);
+    }
+
+    if (filters && filters.price) {
+      whereFilters.price = parseInt(filters.price);
+    }
+
+    const totalCount = await this.prisma.advertisement.count({
+      where: {
+        is_available: true,
+        ...whereFilters,
+      },
+    });
+
     const advertisements = await this.prisma.advertisement.findMany({
       where: {
         is_available: true,
+        ...whereFilters,
       },
+      skip,
+      take: limitNumber,
     });
-    return plainToInstance(Advertisement, advertisements);
+
+    return {
+      totalCount,
+      pageNumber,
+      limitNumber,
+      data: plainToInstance(Advertisement, advertisements),
+    };
   }
 
   async findAllUserAd(id: string): Promise<Advertisement[]> {
@@ -73,3 +117,7 @@ export class AdvertisementsPrismaRepository
     });
   }
 }
+function typeOf(price: number) {
+  throw new Error('Function not implemented.');
+}
+

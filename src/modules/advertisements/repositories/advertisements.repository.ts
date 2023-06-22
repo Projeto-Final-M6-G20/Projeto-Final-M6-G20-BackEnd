@@ -1,4 +1,6 @@
 import { CreateAdvertisementDto } from '../dto/create-advertisement.dto';
+import { FiltersAdvertisementDto } from '../dto/filters-advertisement.dto';
+import { AdvertisementPagination } from '../dto/pagination.dto';
 import { UpdateAdvertisementDto } from '../dto/update-advertisement.dto';
 import { Advertisement } from '../entities/advertisement.entity';
 
@@ -7,7 +9,7 @@ export abstract class AdvertisementsRepository {
     data: CreateAdvertisementDto,
     userId: string,
   ): Promise<Advertisement> | Advertisement;
-  abstract findAll(): Promise<Advertisement[]> | Advertisement[];
+  abstract findAll(page: string, limit: string, filters?: FiltersAdvertisementDto): Promise<AdvertisementPagination> | AdvertisementPagination;
   abstract findAllUserAd(
     id: string,
   ): Promise<Advertisement[]> | Advertisement[];

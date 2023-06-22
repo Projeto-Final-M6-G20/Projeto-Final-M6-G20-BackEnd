@@ -38,7 +38,7 @@ export class CreateUserDto {
   cellphone: string
 
   @IsBoolean()
-  is_advertiser = false
+  is_advertiser
 
   @IsString()
   @IsOptional()
