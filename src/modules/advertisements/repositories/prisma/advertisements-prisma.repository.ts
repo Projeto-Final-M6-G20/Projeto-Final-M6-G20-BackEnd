@@ -63,22 +63,88 @@ export class AdvertisementsPrismaRepository
       where: {
         is_available: true,
         ...whereFilters,
-      },
+      }
     });
+
+    const totalPages = Math.ceil(totalCount / limitNumber);
 
     const advertisements = await this.prisma.advertisement.findMany({
       where: {
         is_available: true,
         ...whereFilters,
       },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        title: true,
+        price: true,
+        description: true,
+        year: true,
+        model: true,
+        fuel_type: true,
+        brand: true,
+        mileage: true,
+        color: true,
+        fipe_price: true,
+        is_available: true,
+        userId: true,
+        User: {
+          select: {
+            id: true,
+            email: true,
+            fullname: true,
+            cpf: true,
+            cellphone: true,
+            is_advertiser: true,
+            birth_date: true,
+            description: true,
+            createdAt: true,
+            updatedAt: true,
+            deletedAt: true,
+          },
+        },
+      },
       skip,
       take: limitNumber,
     });
 
+    const previousPage = pageNumber > 1 ? pageNumber - 1 : null;
+    const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
+
+    const baseUrl = 'http://localhost:3000/advertisements';
+    const queryParams = `limit=${limit}&page=${page}`;
+
+    const previousPageLink = previousPage ? `${baseUrl}?${queryParams}` : null;
+    const nextPageLink = nextPage ? `${baseUrl}?${queryParams}` : null;
+
+    const distinctFilters = await this.prisma.advertisement.findMany({
+      select: {
+        brand: true,
+        model: true,
+        color: true,
+        year: true,
+      },
+      distinct: ['brand', 'model', 'color', 'year'],
+    });
+
+    const filtersTypes = {
+      brands: distinctFilters.map(item => item.brand),
+      models: distinctFilters.map(item => item.model),
+      colors: distinctFilters.map(item => item.color),
+      years: distinctFilters.map(item => item.year),
+    };
     return {
-      totalCount,
-      pageNumber,
-      limitNumber,
+      pagination: {
+        totalCount,
+        pageNumber,
+        limitNumber,
+        totalPages,
+        previousPageLink,
+        nextPageLink,
+      },
+      filtersTypes,
       data: plainToInstance(Advertisement, advertisements),
     };
   }

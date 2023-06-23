@@ -10,8 +10,19 @@ export class PaginationDto {
 }
 
 export interface AdvertisementPagination {
-  totalCount: number;
-  pageNumber: number;
-  limitNumber: number;
+  pagination: {
+    totalCount: number;
+    pageNumber: number;
+    limitNumber: number;
+    totalPages: number;
+    previousPageLink: string;
+    nextPageLink: string;
+  };
+  filtersTypes: {
+    brands: string[];
+    models: string[];
+    colors: string[];
+    years: number[];
+  };
   data: Advertisement[];
 }

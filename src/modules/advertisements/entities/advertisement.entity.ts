@@ -15,6 +15,7 @@ export class Advertisement {
   fipe_price?: number;
   is_available: boolean;
 
+
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
