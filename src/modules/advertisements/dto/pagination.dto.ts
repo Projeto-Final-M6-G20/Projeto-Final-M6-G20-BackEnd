@@ -23,6 +23,7 @@ export interface AdvertisementPagination {
     models: string[];
     colors: string[];
     years: number[];
+    fuel_type: string[]
   };
   data: Advertisement[];
 }

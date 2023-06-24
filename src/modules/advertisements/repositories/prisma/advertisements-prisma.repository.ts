@@ -1,17 +1,12 @@
-import { Injectable, UseGuards, Request } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateAdvertisementDto } from '../../dto/create-advertisement.dto';
 import { UpdateAdvertisementDto } from '../../dto/update-advertisement.dto';
 import { Advertisement } from '../../entities/advertisement.entity';
 import { AdvertisementsRepository } from '../advertisements.repository';
-import { AuthGuard } from '@nestjs/passport';
 import { AdvertisementPagination } from '../../dto/pagination.dto';
-import { Prisma } from '@prisma/client';
 import { FiltersAdvertisementDto } from '../../dto/filters-advertisement.dto';
-
-
-
 
 @Injectable()
 export class AdvertisementsPrismaRepository
@@ -114,10 +109,11 @@ export class AdvertisementsPrismaRepository
     const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
 
     const baseUrl = 'http://localhost:3000/advertisements';
-    const queryParams = `limit=${limit}&page=${page}`;
+    const queryParamsNext = `limit=${limit}&page=${nextPage}`;
+    const queryParamsPrevious = `limit=${limit}&page=${previousPage}`;
 
-    const previousPageLink = previousPage ? `${baseUrl}?${queryParams}` : null;
-    const nextPageLink = nextPage ? `${baseUrl}?${queryParams}` : null;
+    const previousPageLink = previousPage ? `${baseUrl}?${queryParamsPrevious}` : null;
+    const nextPageLink = nextPage ? `${baseUrl}?${queryParamsNext}` : null;
 
     const distinctFilters = await this.prisma.advertisement.findMany({
       select: {
@@ -125,6 +121,7 @@ export class AdvertisementsPrismaRepository
         model: true,
         color: true,
         year: true,
+        fuel_type: true
       },
       distinct: ['brand', 'model', 'color', 'year'],
     });
@@ -133,6 +130,7 @@ export class AdvertisementsPrismaRepository
       models: distinctFilters.map(item => item.model).filter((value, index, self) => self.indexOf(value) === index),
       colors: distinctFilters.map(item => item.color).filter((value, index, self) => self.indexOf(value) === index),
       years: distinctFilters.map(item => item.year).filter((value, index, self) => self.indexOf(value) === index),
+      fuel_type: distinctFilters.map(item => item.fuel_type).filter((value, index, self) => self.indexOf(value) === index),
     };
     return {
       pagination: {
