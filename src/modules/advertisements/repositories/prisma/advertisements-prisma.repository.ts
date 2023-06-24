@@ -128,12 +128,11 @@ export class AdvertisementsPrismaRepository
       },
       distinct: ['brand', 'model', 'color', 'year'],
     });
-
     const filtersTypes = {
-      brands: distinctFilters.map(item => item.brand),
-      models: distinctFilters.map(item => item.model),
-      colors: distinctFilters.map(item => item.color),
-      years: distinctFilters.map(item => item.year),
+      brands: distinctFilters.map(item => item.brand).filter((value, index, self) => self.indexOf(value) === index),
+      models: distinctFilters.map(item => item.model).filter((value, index, self) => self.indexOf(value) === index),
+      colors: distinctFilters.map(item => item.color).filter((value, index, self) => self.indexOf(value) === index),
+      years: distinctFilters.map(item => item.year).filter((value, index, self) => self.indexOf(value) === index),
     };
     return {
       pagination: {
