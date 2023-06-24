@@ -5,7 +5,7 @@ import { CreateAdvertisementDto } from '../../dto/create-advertisement.dto';
 import { UpdateAdvertisementDto } from '../../dto/update-advertisement.dto';
 import { Advertisement } from '../../entities/advertisement.entity';
 import { AdvertisementsRepository } from '../advertisements.repository';
-import { AdvertisementPagination } from '../../dto/pagination.dto';
+import { AdvertisementPagination, iFiltersTypes } from '../../dto/pagination.dto';
 import { FiltersAdvertisementDto } from '../../dto/filters-advertisement.dto';
 
 @Injectable()
@@ -132,6 +132,35 @@ export class AdvertisementsPrismaRepository
       years: distinctFilters.map(item => item.year).filter((value, index, self) => self.indexOf(value) === index),
       fuel_type: distinctFilters.map(item => item.fuel_type).filter((value, index, self) => self.indexOf(value) === index),
     };
+    const typesThisPage: iFiltersTypes = {
+      models: [],
+      colors: [],
+      brands: [],
+      years: [],
+      fuel_type: []
+    }
+
+    advertisements.forEach(ad => {
+      if (!typesThisPage.models.includes(ad.model)) {
+        typesThisPage.models.push(ad.model);
+      }
+
+      if (!typesThisPage.colors.includes(ad.color)) {
+        typesThisPage.colors.push(ad.color);
+      }
+
+      if (!typesThisPage.years.includes(ad.year)) {
+        typesThisPage.years.push(ad.year);
+      }
+      if (!typesThisPage.brands.includes(ad.brand)) {
+        typesThisPage.brands.push(ad.brand);
+      }
+      if (!typesThisPage.fuel_type.includes(ad.fuel_type)) {
+        typesThisPage.fuel_type.push(ad.fuel_type);
+      }
+    });
+
+
     return {
       pagination: {
         totalCount,
@@ -142,6 +171,7 @@ export class AdvertisementsPrismaRepository
         nextPageLink,
       },
       filtersTypes,
+      filtersTypesThisSearch: typesThisPage,
       data: plainToInstance(Advertisement, advertisements),
     };
   }
