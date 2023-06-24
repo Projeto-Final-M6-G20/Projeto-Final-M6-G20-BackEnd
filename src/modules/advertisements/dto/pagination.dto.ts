@@ -8,6 +8,13 @@ export class PaginationDto {
   @IsOptional()
   limit?: string;
 }
+export interface iFiltersTypes {
+  brands: string[];
+  models: string[];
+  colors: string[];
+  years: number[];
+  fuel_type: string[]
+}
 
 export interface AdvertisementPagination {
   pagination: {
@@ -23,6 +30,14 @@ export interface AdvertisementPagination {
     models: string[];
     colors: string[];
     years: number[];
+    fuel_type: string[]
   };
+  filtersTypesThisSearch: {
+    brands: string[];
+    models: string[];
+    colors: string[];
+    years: number[];
+    fuel_type: string[]
+  }
   data: Advertisement[];
 }
