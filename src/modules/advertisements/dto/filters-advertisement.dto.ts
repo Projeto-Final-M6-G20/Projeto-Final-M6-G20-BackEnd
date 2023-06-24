@@ -12,37 +12,37 @@ export class FiltersAdvertisementDto {
   @IsOptional()
   title: string;
 
-  @IsString()
+
   @IsOptional()
-  price: string;
+  price: string
 
   @IsString()
   @IsOptional()
   description: string;
 
-  @IsString()
-  @IsOptional()
-  year: string;
 
-  @IsString()
   @IsOptional()
-  model: string;
+  year: string
 
-  @IsString()
-  @IsOptional()
-  fuel_type: string;
 
-  @IsString()
   @IsOptional()
-  brand: string;
+  model: string | []
+
+
+  @IsOptional()
+  fuel_type: string | []
+
+
+  @IsOptional()
+  brand: string | []
 
   @IsString()
   @IsOptional()
   mileage: string;
 
-  @IsString()
+
   @IsOptional()
-  color: string;
+  color: string | []
 
   @IsString()
   @IsOptional()

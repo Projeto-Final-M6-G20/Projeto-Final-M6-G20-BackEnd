@@ -45,6 +45,13 @@ export class AdvertisementsPrismaRepository
       is_available: true,
       ...filters,
     };
+    function applyFilter(property: string) {
+      if (filters && filters[property] && Array.isArray(filters[property])) {
+        whereFilters[property] = {
+          in: filters[property].map((value: string) => value),
+        };
+      }
+    }
 
     if (filters && filters.year) {
       whereFilters.year = parseInt(filters.year);
@@ -53,10 +60,13 @@ export class AdvertisementsPrismaRepository
     if (filters && filters.price) {
       whereFilters.price = parseInt(filters.price);
     }
+    applyFilter('brand');
+    applyFilter('model');
+    applyFilter('color');
+    applyFilter('fuel_type');
 
     const totalCount = await this.prisma.advertisement.count({
       where: {
-        is_available: true,
         ...whereFilters,
       }
     });
@@ -65,7 +75,6 @@ export class AdvertisementsPrismaRepository
 
     const advertisements = await this.prisma.advertisement.findMany({
       where: {
-        is_available: true,
         ...whereFilters,
       },
       select: {
@@ -170,9 +179,9 @@ export class AdvertisementsPrismaRepository
         previousPageLink,
         nextPageLink,
       },
-      filtersTypes,
       filtersTypesThisSearch: typesThisPage,
       data: plainToInstance(Advertisement, advertisements),
+      filtersTypes,
     };
   }
 
