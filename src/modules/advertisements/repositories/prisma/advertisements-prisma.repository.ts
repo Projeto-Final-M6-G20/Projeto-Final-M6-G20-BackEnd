@@ -7,6 +7,7 @@ import { Advertisement } from '../../entities/advertisement.entity';
 import { AdvertisementsRepository } from '../advertisements.repository';
 import { AdvertisementPagination, iFiltersTypes } from '../../dto/pagination.dto';
 import { FiltersAdvertisementDto } from '../../dto/filters-advertisement.dto';
+import { Image } from 'src/modules/images/entities/image.entity';
 
 @Injectable()
 export class AdvertisementsPrismaRepository
@@ -23,17 +24,40 @@ export class AdvertisementsPrismaRepository
     if (!user) {
       throw new Error('Usuário não encontrado.');
     }
+
+    const { url, ...advertisementData } = data
+    const urlImage = {
+      url: url
+    }
+
+
+    const image = new Image()
+    Object.assign(image, urlImage)
+
+
     const advertisement = new Advertisement();
     Object.assign(advertisement, {
-      ...data,
+      ...advertisementData,
       User: { connect: { id: userId } },
+      images: {
+        create: {
+          ...image
+        }
+      }
+
     });
 
     const newAdvertisement = await this.prisma.advertisement.create({
       data: { ...advertisement },
     });
 
-    return plainToInstance(Advertisement, newAdvertisement);
+    const findAd = await this.prisma.advertisement.findFirst({
+      where: { id: advertisement.id },
+      include: {
+        images: true
+      }
+    })
+    return plainToInstance(Advertisement, findAd);
   }
 
   async findAll(page: string, limit: string, filters?: FiltersAdvertisementDto): Promise<AdvertisementPagination> {
@@ -109,6 +133,11 @@ export class AdvertisementsPrismaRepository
             deletedAt: true,
           },
         },
+        images: {
+          select: {
+            url: true
+          }
+        }
       },
       skip,
       take: limitNumber,
@@ -190,6 +219,13 @@ export class AdvertisementsPrismaRepository
       where: {
         userId: id,
       },
+      include: {
+        images: {
+          select: {
+            url: true
+          }
+        }
+      }
     });
 
     return plainToInstance(Advertisement, userAdvertisements);
@@ -198,6 +234,13 @@ export class AdvertisementsPrismaRepository
   async findOne(id: string): Promise<Advertisement | undefined> {
     const advertisement = await this.prisma.advertisement.findUnique({
       where: { id },
+      include: {
+        images: {
+          select: {
+            url: true
+          }
+        }
+      }
     });
     return plainToInstance(Advertisement, advertisement);
   }
