@@ -52,6 +52,10 @@ export class CreateAdvertisementDto {
   @IsOptional()
   is_available?: boolean;
 
+  @IsString()
+  @IsOptional()
+  url?: string
+
   createdAt: Date;
 
   updatedAt: Date;
