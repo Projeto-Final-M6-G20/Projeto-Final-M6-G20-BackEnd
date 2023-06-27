@@ -29,6 +29,7 @@ export class AdvertisementsPrismaRepository
     const urlImage = {
       url: url
     }
+    if (!url) urlImage.url = ''
 
 
     const image = new Image()
