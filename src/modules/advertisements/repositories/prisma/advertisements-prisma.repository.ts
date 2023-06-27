@@ -31,7 +31,6 @@ export class AdvertisementsPrismaRepository
     }
     if (!url) urlImage.url = ''
 
-
     const image = new Image()
     Object.assign(image, urlImage)
 
@@ -240,7 +239,19 @@ export class AdvertisementsPrismaRepository
           select: {
             url: true
           }
+        },
+        User: {
+          select: {
+            id: true,
+            email: true,
+            fullname: true,
+            cellphone: true,
+            is_advertiser: true,
+            birth_date: true,
+            description: true,
+          }
         }
+
       }
     });
     return plainToInstance(Advertisement, advertisement);
