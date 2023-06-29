@@ -76,6 +76,21 @@ export class AdvertisementsPrismaRepository
         };
       }
     }
+    if (filters && filters.minimaMileage) {
+      delete whereFilters.minimaMileage;
+      whereFilters.mileage = {
+        ...(whereFilters.mileage || {}),
+        gte: filters.minimaMileage,
+      };
+    }
+
+    if (filters && filters.maximaMileage) {
+      delete whereFilters.maximaMileage;
+      whereFilters.mileage = {
+        ...(whereFilters.mileage || {}),
+        lte: filters.maximaMileage,
+      };
+    }
 
     if (filters && filters.year) {
       whereFilters.year = parseInt(filters.year);
@@ -84,6 +99,7 @@ export class AdvertisementsPrismaRepository
     if (filters && filters.price) {
       whereFilters.price = parseInt(filters.price);
     }
+
     applyFilter('brand');
     applyFilter('model');
     applyFilter('color');
