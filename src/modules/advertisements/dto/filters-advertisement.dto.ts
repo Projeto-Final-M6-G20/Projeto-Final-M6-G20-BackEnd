@@ -40,6 +40,14 @@ export class FiltersAdvertisementDto {
   @IsOptional()
   mileage: string;
 
+  @IsString()
+  @IsOptional()
+  minimaMileage?: string;
+
+  @IsString()
+  @IsOptional()
+  maximaMileage?: string;
+
 
   @IsOptional()
   color: string | []
