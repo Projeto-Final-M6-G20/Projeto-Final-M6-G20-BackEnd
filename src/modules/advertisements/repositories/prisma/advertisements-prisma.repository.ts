@@ -261,6 +261,26 @@ export class AdvertisementsPrismaRepository
     return plainToInstance(Advertisement, userAdvertisements);
   }
 
+  async findAllAvailableUserAd(id: string): Promise<Advertisement[]> {
+    const userAdvertisements = await this.prisma.advertisement.findMany({
+      where: {
+        userId: id,
+        is_available: true
+      },
+      include: {
+        images: {
+          select: {
+            url: true
+          }
+        }
+      }
+    });
+
+    return plainToInstance(Advertisement, userAdvertisements);
+
+  }
+
+
   async findOne(id: string): Promise<Advertisement | undefined> {
     const advertisement = await this.prisma.advertisement.findUnique({
       where: { id },
