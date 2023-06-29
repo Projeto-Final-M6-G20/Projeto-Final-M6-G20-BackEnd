@@ -48,7 +48,7 @@ export class AdvertisementsController {
 
   @Get('/user/:id')
   findAllAvailableUserAd(@Param('id') id: any) {
-    return this.advertisementsService.findAllUserAd(id);
+    return this.advertisementsService.findAllAvailableUserAd(id);
   }
 
   @Get(':id')

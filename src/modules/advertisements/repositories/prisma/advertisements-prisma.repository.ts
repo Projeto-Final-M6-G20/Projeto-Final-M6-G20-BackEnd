@@ -272,6 +272,14 @@ export class AdvertisementsPrismaRepository
           select: {
             url: true
           }
+        },
+        User: {
+          select: {
+            fullname: true,
+            id: true,
+            is_advertiser: true,
+            description: true
+          }
         }
       }
     });
