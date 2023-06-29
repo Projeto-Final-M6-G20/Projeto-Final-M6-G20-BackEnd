@@ -91,6 +91,20 @@ export class AdvertisementsPrismaRepository
         lte: filters.maximaMileage,
       };
     }
+    if (filters && filters.minimaPrice) {
+      delete whereFilters.minimaPrice;
+      whereFilters.price = {
+        ...(whereFilters.price || {}),
+        gte: parseInt(filters.minimaPrice),
+      };
+    }
+    if (filters && filters.maximaPrice) {
+      delete whereFilters.maximaPrice;
+      whereFilters.price = {
+        ...(whereFilters.price || {}),
+        lte: parseInt(filters.maximaPrice),
+      };
+    }
 
     if (filters && filters.year) {
       whereFilters.year = parseInt(filters.year);
