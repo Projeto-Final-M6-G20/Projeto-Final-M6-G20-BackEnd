@@ -1,8 +1,11 @@
+import { ApiExcludeController } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { AddressesService } from './addresses.service';
 import { UpdateAddressDto } from './dto/update-address.dto';
 
+
+@ApiExcludeController()
 @Controller('address/user/:id/')
 export class AddressesController {
   constructor(private readonly addressesService: AddressesService) { }

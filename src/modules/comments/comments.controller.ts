@@ -15,12 +15,16 @@ import {
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(private readonly commentsService: CommentsService) { }
   @UseInterceptors(ClassSerializerInterceptor)
+
   @Post('advertisement/:advertisementId')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   create(
     @Body() createCommentDto: CreateCommentDto,
@@ -36,6 +40,7 @@ export class CommentsController {
   }
 
   @Get('advertisement/:id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   findAllUserAd(@Request() req: any, @Param('id') id: string) {
     return this.commentsService.findAllAdComments(id);
