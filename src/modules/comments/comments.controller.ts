@@ -10,11 +10,11 @@ import {
   ClassSerializerInterceptor,
   UseGuards,
   Request,
-  Query,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -37,7 +37,19 @@ export class CommentsController {
 
   @Get('advertisement/:id')
   @UseGuards(AuthGuard('jwt'))
-  findAllUserAd(@Request() req: any, @Param('id') id: string) {
+  findAllUserAd(@Param('id') id: string) {
     return this.commentsService.findAllAdComments(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
+  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
+    return this.commentsService.update(id, updateCommentDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  remove(@Param('id') id: string) {
+    return this.commentsService.remove(id);
   }
 }
