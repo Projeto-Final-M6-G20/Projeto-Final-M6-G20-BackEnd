@@ -4,6 +4,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { CreateCommentDto } from '../../dto/create-comment.dto';
 import { Comment } from '../../entities/comments.entity';
 import { CommentsRepository } from '../comments.repository';
+import { UpdateCommentDto } from '../../dto/update-comment.dto';
 
 @Injectable()
 export class CommentsPrismaRepository implements CommentsRepository {
@@ -50,6 +51,13 @@ export class CommentsPrismaRepository implements CommentsRepository {
     return plainToInstance(Comment, findComment);
   }
 
+  async findOne(id: string): Promise<Comment | undefined> {
+    const comment = await this.prisma.comment.findUnique({
+      where: { id },
+    });
+    return plainToInstance(Comment, comment);
+  }
+
   async findAllAdComments(id: string): Promise<Comment[]> {
     const adComments = await this.prisma.comment.findMany({
       where: {
@@ -62,5 +70,19 @@ export class CommentsPrismaRepository implements CommentsRepository {
     });
 
     return plainToInstance(Comment, adComments);
+  }
+
+  async update(id: string, data: UpdateCommentDto): Promise<Comment> {
+    const updatedComment = await this.prisma.comment.update({
+      where: { id },
+      data: { ...data },
+    });
+    return plainToInstance(Comment, updatedComment);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.comment.delete({
+      where: { id },
+    });
   }
 }

@@ -5,35 +5,37 @@ import { CreateAdvertisementDto } from '../../dto/create-advertisement.dto';
 import { UpdateAdvertisementDto } from '../../dto/update-advertisement.dto';
 import { Advertisement } from '../../entities/advertisement.entity';
 import { AdvertisementsRepository } from '../advertisements.repository';
-import { AdvertisementPagination, iFiltersTypes } from '../../dto/pagination.dto';
+import {
+  AdvertisementPagination,
+  iFiltersTypes,
+} from '../../dto/pagination.dto';
 import { FiltersAdvertisementDto } from '../../dto/filters-advertisement.dto';
 import { Image } from 'src/modules/images/entities/image.entity';
 
 @Injectable()
 export class AdvertisementsPrismaRepository
-  implements AdvertisementsRepository {
-  constructor(private prisma: PrismaService) { }
+  implements AdvertisementsRepository
+{
+  constructor(private prisma: PrismaService) {}
 
   async create(
     data: CreateAdvertisementDto,
     userId: string,
   ): Promise<Advertisement> {
-
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
       throw new Error('Usuário não encontrado.');
     }
 
-    const { url, ...advertisementData } = data
+    const { url, ...advertisementData } = data;
     const urlImage = {
-      url: url
-    }
-    if (!url) urlImage.url = ''
+      url: url,
+    };
+    if (!url) urlImage.url = '';
 
-    const image = new Image()
-    Object.assign(image, urlImage)
-
+    const image = new Image();
+    Object.assign(image, urlImage);
 
     const advertisement = new Advertisement();
     Object.assign(advertisement, {
@@ -41,10 +43,9 @@ export class AdvertisementsPrismaRepository
       User: { connect: { id: userId } },
       images: {
         create: {
-          ...image
-        }
-      }
-
+          ...image,
+        },
+      },
     });
 
     const newAdvertisement = await this.prisma.advertisement.create({
@@ -54,13 +55,17 @@ export class AdvertisementsPrismaRepository
     const findAd = await this.prisma.advertisement.findFirst({
       where: { id: advertisement.id },
       include: {
-        images: true
-      }
-    })
+        images: true,
+      },
+    });
     return plainToInstance(Advertisement, findAd);
   }
 
-  async findAll(page: string, limit: string, filters?: FiltersAdvertisementDto): Promise<AdvertisementPagination> {
+  async findAll(
+    page: string,
+    limit: string,
+    filters?: FiltersAdvertisementDto,
+  ): Promise<AdvertisementPagination> {
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
     const skip = (pageNumber - 1) * limitNumber;
@@ -122,7 +127,7 @@ export class AdvertisementsPrismaRepository
     const totalCount = await this.prisma.advertisement.count({
       where: {
         ...whereFilters,
-      }
+      },
     });
 
     const totalPages = Math.ceil(totalCount / limitNumber);
@@ -165,9 +170,9 @@ export class AdvertisementsPrismaRepository
         },
         images: {
           select: {
-            url: true
-          }
-        }
+            url: true,
+          },
+        },
       },
       skip,
       take: limitNumber,
@@ -180,7 +185,9 @@ export class AdvertisementsPrismaRepository
     const queryParamsNext = `limit=${limit}&page=${nextPage}`;
     const queryParamsPrevious = `limit=${limit}&page=${previousPage}`;
 
-    const previousPageLink = previousPage ? `${baseUrl}?${queryParamsPrevious}` : null;
+    const previousPageLink = previousPage
+      ? `${baseUrl}?${queryParamsPrevious}`
+      : null;
     const nextPageLink = nextPage ? `${baseUrl}?${queryParamsNext}` : null;
 
     const distinctFilters = await this.prisma.advertisement.findMany({
@@ -189,26 +196,36 @@ export class AdvertisementsPrismaRepository
         model: true,
         color: true,
         year: true,
-        fuel_type: true
+        fuel_type: true,
       },
       distinct: ['brand', 'model', 'color', 'year'],
     });
     const filtersTypes = {
-      brands: distinctFilters.map(item => item.brand).filter((value, index, self) => self.indexOf(value) === index),
-      models: distinctFilters.map(item => item.model).filter((value, index, self) => self.indexOf(value) === index),
-      colors: distinctFilters.map(item => item.color).filter((value, index, self) => self.indexOf(value) === index),
-      years: distinctFilters.map(item => item.year).filter((value, index, self) => self.indexOf(value) === index),
-      fuel_type: distinctFilters.map(item => item.fuel_type).filter((value, index, self) => self.indexOf(value) === index),
+      brands: distinctFilters
+        .map((item) => item.brand)
+        .filter((value, index, self) => self.indexOf(value) === index),
+      models: distinctFilters
+        .map((item) => item.model)
+        .filter((value, index, self) => self.indexOf(value) === index),
+      colors: distinctFilters
+        .map((item) => item.color)
+        .filter((value, index, self) => self.indexOf(value) === index),
+      years: distinctFilters
+        .map((item) => item.year)
+        .filter((value, index, self) => self.indexOf(value) === index),
+      fuel_type: distinctFilters
+        .map((item) => item.fuel_type)
+        .filter((value, index, self) => self.indexOf(value) === index),
     };
     const typesThisPage: iFiltersTypes = {
       models: [],
       colors: [],
       brands: [],
       years: [],
-      fuel_type: []
-    }
+      fuel_type: [],
+    };
 
-    advertisements.forEach(ad => {
+    advertisements.forEach((ad) => {
       if (!typesThisPage.models.includes(ad.model)) {
         typesThisPage.models.push(ad.model);
       }
@@ -227,7 +244,6 @@ export class AdvertisementsPrismaRepository
         typesThisPage.fuel_type.push(ad.fuel_type);
       }
     });
-
 
     return {
       pagination: {
@@ -252,10 +268,10 @@ export class AdvertisementsPrismaRepository
       include: {
         images: {
           select: {
-            url: true
-          }
-        }
-      }
+            url: true,
+          },
+        },
+      },
     });
 
     return plainToInstance(Advertisement, userAdvertisements);
@@ -295,8 +311,8 @@ export class AdvertisementsPrismaRepository
       include: {
         images: {
           select: {
-            url: true
-          }
+            url: true,
+          },
         },
         User: {
           select: {
@@ -307,10 +323,9 @@ export class AdvertisementsPrismaRepository
             is_advertiser: true,
             birth_date: true,
             description: true,
-          }
-        }
-
-      }
+          },
+        },
+      },
     });
     return plainToInstance(Advertisement, advertisement);
   }
@@ -332,5 +347,3 @@ export class AdvertisementsPrismaRepository
     });
   }
 }
-
-

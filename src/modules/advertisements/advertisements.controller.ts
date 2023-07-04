@@ -23,7 +23,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('advertisements')
 @Controller('advertisements')
 export class AdvertisementsController {
-  constructor(private readonly advertisementsService: AdvertisementsService) { }
+  constructor(private readonly advertisementsService: AdvertisementsService) {}
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   @ApiBearerAuth()
@@ -37,11 +37,12 @@ export class AdvertisementsController {
   }
 
   @Get()
-  findAll(@Query() paginationDto: PaginationDto, @Query() filters?: FiltersAdvertisementDto) {
+  findAll(
+    @Query() paginationDto: PaginationDto,
+    @Query() filters?: FiltersAdvertisementDto,
+  ) {
     return this.advertisementsService.findAll(paginationDto, filters);
   }
-
-
 
   @Get('/user')
   @ApiBearerAuth()
@@ -73,5 +74,3 @@ export class AdvertisementsController {
     return this.advertisementsService.remove(id);
   }
 }
-
-
