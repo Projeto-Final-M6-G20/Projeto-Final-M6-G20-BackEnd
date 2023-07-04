@@ -18,12 +18,15 @@ import { UpdateAdvertisementDto } from './dto/update-advertisement.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { PaginationDto } from './dto/pagination.dto';
 import { FiltersAdvertisementDto } from './dto/filters-advertisement.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('advertisements')
 @Controller('advertisements')
 export class AdvertisementsController {
   constructor(private readonly advertisementsService: AdvertisementsService) {}
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   create(
     @Body() createAdvertisementDto: CreateAdvertisementDto,
@@ -42,9 +45,15 @@ export class AdvertisementsController {
   }
 
   @Get('/user')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   findAllUserAd(@Request() req: any) {
     return this.advertisementsService.findAllUserAd(req.user.id);
+  }
+
+  @Get('/user/:id')
+  findAllAvailableUserAd(@Param('id') id: any) {
+    return this.advertisementsService.findAllAvailableUserAd(id);
   }
 
   @Get(':id')

@@ -13,6 +13,9 @@ export abstract class AdvertisementsRepository {
   abstract findAllUserAd(
     id: string,
   ): Promise<Advertisement[]> | Advertisement[];
+  abstract findAllAvailableUserAd(
+    id: string,
+  ): Promise<Advertisement[]> | Advertisement[]
   abstract findOne(
     id: string,
   ): Promise<Advertisement | undefined> | Advertisement | undefined;

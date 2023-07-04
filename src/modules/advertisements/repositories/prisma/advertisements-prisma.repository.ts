@@ -81,6 +81,35 @@ export class AdvertisementsPrismaRepository
         };
       }
     }
+    if (filters && filters.minimaMileage) {
+      delete whereFilters.minimaMileage;
+      whereFilters.mileage = {
+        ...(whereFilters.mileage || {}),
+        gte: filters.minimaMileage,
+      };
+    }
+
+    if (filters && filters.maximaMileage) {
+      delete whereFilters.maximaMileage;
+      whereFilters.mileage = {
+        ...(whereFilters.mileage || {}),
+        lte: filters.maximaMileage,
+      };
+    }
+    if (filters && filters.minimaPrice) {
+      delete whereFilters.minimaPrice;
+      whereFilters.price = {
+        ...(whereFilters.price || {}),
+        gte: parseInt(filters.minimaPrice),
+      };
+    }
+    if (filters && filters.maximaPrice) {
+      delete whereFilters.maximaPrice;
+      whereFilters.price = {
+        ...(whereFilters.price || {}),
+        lte: parseInt(filters.maximaPrice),
+      };
+    }
 
     if (filters && filters.year) {
       whereFilters.year = parseInt(filters.year);
@@ -89,6 +118,7 @@ export class AdvertisementsPrismaRepository
     if (filters && filters.price) {
       whereFilters.price = parseInt(filters.price);
     }
+
     applyFilter('brand');
     applyFilter('model');
     applyFilter('color');
@@ -246,6 +276,34 @@ export class AdvertisementsPrismaRepository
 
     return plainToInstance(Advertisement, userAdvertisements);
   }
+
+  async findAllAvailableUserAd(id: string): Promise<Advertisement[]> {
+    const userAdvertisements = await this.prisma.advertisement.findMany({
+      where: {
+        userId: id,
+        is_available: true
+      },
+      include: {
+        images: {
+          select: {
+            url: true
+          }
+        },
+        User: {
+          select: {
+            fullname: true,
+            id: true,
+            is_advertiser: true,
+            description: true
+          }
+        }
+      }
+    });
+
+    return plainToInstance(Advertisement, userAdvertisements);
+
+  }
+
 
   async findOne(id: string): Promise<Advertisement | undefined> {
     const advertisement = await this.prisma.advertisement.findUnique({

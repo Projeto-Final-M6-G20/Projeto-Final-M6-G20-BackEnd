@@ -3,9 +3,10 @@ import { hashSync } from "bcryptjs"
 import { Transform } from "class-transformer"
 import { IsEmailUnique } from "../validators/email.validator"
 import { IsCPFUnique } from "../validators/cpf.validator"
-import { CreateAddressDto } from "src/modules/addresses/dto/create-address.dto"
+import { ApiProperty } from "@nestjs/swagger"
 
 export class CreateUserDto {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @IsEmail()
@@ -14,6 +15,7 @@ export class CreateUserDto {
   })
   email: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
@@ -22,10 +24,12 @@ export class CreateUserDto {
   })
   password: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   fullname: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @IsCPFUnique({
@@ -33,41 +37,51 @@ export class CreateUserDto {
   })
   cpf: string;
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   cellphone: string
 
+  @ApiProperty()
   @IsBoolean()
   is_advertiser
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   birth_date: string
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   description: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   street: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   zip_code: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   number: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   city: string
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   state: string
 
+  @ApiProperty()
   @IsString()
   @IsOptional()
   complement?: string
