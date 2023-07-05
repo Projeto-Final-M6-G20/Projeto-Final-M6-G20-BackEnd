@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
+import { ImagesRepository } from './repositories/images.repository';
 
 @Injectable()
 export class ImagesService {
+
+  constructor(private imagesRepository: ImagesRepository) { }
+
   create(createImageDto: CreateImageDto) {
     return 'This action adds a new image';
   }
@@ -12,15 +16,27 @@ export class ImagesService {
     return `This action returns all images`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} image`;
+  async findOne(id: string) {
+    const findImage = await this.imagesRepository.findOne(id)
+    if (!findImage) {
+      throw new NotFoundException('Image not found')
+    }
+    return findImage
   }
 
-  update(id: number, updateImageDto: UpdateImageDto) {
-    return `This action updates a #${id} image`;
+  async update(id: string, updateImageDto: UpdateImageDto) {
+    const findImage = await this.imagesRepository.findOne(id)
+    if (!findImage) {
+      throw new NotFoundException('Image not found')
+    }
+    return await this.imagesRepository.update(id, updateImageDto)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} image`;
+  async remove(id: string) {
+    const findImage = await this.imagesRepository.findOne(id)
+    if (!findImage) {
+      throw new NotFoundException('Image not found')
+    }
+    return await this.imagesRepository.delete(id)
   }
 }

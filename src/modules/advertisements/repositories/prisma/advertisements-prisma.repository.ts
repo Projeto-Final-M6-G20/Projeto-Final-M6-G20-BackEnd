@@ -14,9 +14,8 @@ import { Image } from 'src/modules/images/entities/image.entity';
 
 @Injectable()
 export class AdvertisementsPrismaRepository
-  implements AdvertisementsRepository
-{
-  constructor(private prisma: PrismaService) {}
+  implements AdvertisementsRepository {
+  constructor(private prisma: PrismaService) { }
 
   async create(
     data: CreateAdvertisementDto,
@@ -28,23 +27,28 @@ export class AdvertisementsPrismaRepository
       throw new Error('Usuário não encontrado.');
     }
 
-    const { url, ...advertisementData } = data;
-    const urlImage = {
-      url: url,
-    };
-    if (!url) urlImage.url = '';
+    const { urls, ...advertisementData } = data;
+    const images: Image[] = [];
 
-    const image = new Image();
-    Object.assign(image, urlImage);
+    if (urls && urls.length > 0) {
+      for (const url of urls) {
+        const urlImage = { url: url };
+        if (!url) {
+          urlImage.url = '';
+        }
+
+        const image = new Image();
+        Object.assign(image, urlImage);
+        images.push(image);
+      }
+    }
 
     const advertisement = new Advertisement();
     Object.assign(advertisement, {
       ...advertisementData,
       User: { connect: { id: userId } },
       images: {
-        create: {
-          ...image,
-        },
+        create: images,
       },
     });
 
@@ -58,8 +62,10 @@ export class AdvertisementsPrismaRepository
         images: true,
       },
     });
+
     return plainToInstance(Advertisement, findAd);
   }
+
 
   async findAll(
     page: string,

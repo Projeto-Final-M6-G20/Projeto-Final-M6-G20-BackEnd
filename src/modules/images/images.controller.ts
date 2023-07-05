@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
-import { ApiExcludeController } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiExcludeController } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiExcludeController()
 @Controller('images')
@@ -14,23 +15,29 @@ export class ImagesController {
     return this.imagesService.create(createImageDto);
   }
 
-  @Get()
+  @Get('')
   findAll() {
     return this.imagesService.findAll();
   }
 
   @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   findOne(@Param('id') id: string) {
-    return this.imagesService.findOne(+id);
+    return this.imagesService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   update(@Param('id') id: string, @Body() updateImageDto: UpdateImageDto) {
-    return this.imagesService.update(+id, updateImageDto);
+    return this.imagesService.update(id, updateImageDto);
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   remove(@Param('id') id: string) {
-    return this.imagesService.remove(+id);
+    return this.imagesService.remove(id);
   }
 }
