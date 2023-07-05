@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
@@ -10,9 +10,11 @@ import { AuthGuard } from '@nestjs/passport';
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) { }
 
-  @Post()
-  create(@Body() createImageDto: CreateImageDto) {
-    return this.imagesService.create(createImageDto);
+  @Post("/advertisement/:id")
+  @UseGuards(AuthGuard('jwt'))
+  create(@Body() createImageDto: CreateImageDto, @Param('id') advertisementId: string) {
+
+    return this.imagesService.create(createImageDto, advertisementId);
   }
 
   @Get('')

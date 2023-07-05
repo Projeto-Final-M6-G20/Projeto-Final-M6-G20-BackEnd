@@ -8,8 +8,9 @@ export class ImagesService {
 
   constructor(private imagesRepository: ImagesRepository) { }
 
-  create(createImageDto: CreateImageDto) {
-    return 'This action adds a new image';
+  async create(createImageDto: CreateImageDto, userId: string) {
+    const image = await this.imagesRepository.create(createImageDto, userId)
+    return image
   }
 
   findAll() {
