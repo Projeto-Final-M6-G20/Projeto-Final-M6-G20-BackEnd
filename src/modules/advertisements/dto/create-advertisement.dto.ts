@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsBoolean,
   IsInt,
   IsNotEmpty,
@@ -65,9 +66,9 @@ export class CreateAdvertisementDto {
   is_available?: boolean;
 
   @ApiProperty()
-  @IsString()
+  @IsArray()
   @IsOptional()
-  url?: string
+  urls?: string
 
   createdAt: Date;
 
