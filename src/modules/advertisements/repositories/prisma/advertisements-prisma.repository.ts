@@ -318,6 +318,7 @@ export class AdvertisementsPrismaRepository
         images: {
           select: {
             url: true,
+            id: true
           },
         },
         User: {
