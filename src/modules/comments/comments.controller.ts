@@ -20,7 +20,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(private readonly commentsService: CommentsService) { }
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('advertisement/:advertisementId')
   @ApiBearerAuth()
@@ -39,8 +39,6 @@ export class CommentsController {
   }
 
   @Get('advertisement/:id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
   findAllUserAd(@Param('id') id: string) {
     return this.commentsService.findAllAdComments(id);
   }
