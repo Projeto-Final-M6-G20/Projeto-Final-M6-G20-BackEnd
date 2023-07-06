@@ -7,7 +7,7 @@ const mailGenerator = new Mailgen({
   theme: "default",
   product: {
     name: "Motor Shop Kenzie",
-    link: "http://localhost:3001"
+    link: "https://projeto-final-m6-g20-front-end-achf-git-e15bfb-motors-shop-g20.vercel.app"
   }
 })
 
@@ -39,7 +39,7 @@ export class MailService {
           instructions: "Clique no botão abaixo para criar uma nova senha",
           button: {
             text: "Resetar senha",
-            link: `http://localhost:3001/resetPassword/${resetToken}`
+            link: `https://projeto-final-m6-g20-front-end-achf-git-e15bfb-motors-shop-g20.vercel.app/resetPassword/${resetToken}`
           }
         }
       }

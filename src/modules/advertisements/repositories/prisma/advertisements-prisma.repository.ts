@@ -187,7 +187,7 @@ export class AdvertisementsPrismaRepository
     const previousPage = pageNumber > 1 ? pageNumber - 1 : null;
     const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
 
-    const baseUrl = 'http://localhost:3000/advertisements';
+    const baseUrl = 'https://projeto-final-m6-g20-front-end-achf-git-e15bfb-motors-shop-g20.vercel.app/advertisements';
     const queryParamsNext = `limit=${limit}&page=${nextPage}`;
     const queryParamsPrevious = `limit=${limit}&page=${previousPage}`;
 
